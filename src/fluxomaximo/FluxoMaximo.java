@@ -13,7 +13,6 @@ public class FluxoMaximo {
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
         
-        // /Users/pablovieira/NetBeansProjects/FluxoMaximo/grafo.txt
         System.out.println("Informe o caminho do arquivo: ");
         Scanner lerArquivo = new Scanner(System.in);
         String arquivo = lerArquivo.nextLine();
@@ -21,7 +20,7 @@ public class FluxoMaximo {
         /**
          * Java IO
          */
-        InputStream inputStream = new FileInputStream(arquivo); // Modificar o caminho do arquivo
+        InputStream inputStream = new FileInputStream(arquivo);
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
@@ -63,7 +62,7 @@ public class FluxoMaximo {
         " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
         " xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns \n" +
         " http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">");
-        writer.println("<key id=\"d0\" for=\"edge\" attr.name=\"weight\" attr.type=\"int\" />");
+        writer.println("<key id=\"d0\" for=\"edge\" attr.name=\"capacity\" attr.type=\"int\" />");
         writer.println("<graph id=\"G\" edgedefault=\"directed\">");
         for (int i = 0; i < numeroVertices; i++) {
             writer.println("<node id=\"n" + (i + 1) + "\" />");
