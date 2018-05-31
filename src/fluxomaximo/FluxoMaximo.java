@@ -54,7 +54,7 @@ public class FluxoMaximo {
         Grafo g = new Grafo();
         int[][] grafo = g.corteMinimo(matrizAdjacencia, verticeOrigem - 1, verticeDestino - 1);
         /**
-         * Exporta o último grafo para um arquivo .graphml
+         * Exporta a última rede residual para o arquivo grafo.graphml
          */
         PrintWriter writer = new PrintWriter("grafo.graphml", "UTF-8");
         writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");

@@ -1,5 +1,6 @@
 package fluxomaximo;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -11,7 +12,7 @@ public class Grafo {
      * @param s Vértice inicial
      * @param t Vértice final
      * @param anterior Vetor que guarda o antecessor de cada vértice, no caminho de "s" até ele
-     * @return Retorna "true" se existe caminho entre "s" e "t" no grafo residual e falso caso não exista.
+     * @return Retorna "true" se existe caminho entre "s" e "t" na rede residual e falso caso não exista.
      */
     private boolean buscaEmLargura(int[][] grafo, int s, int t, int[] anterior) {
 
@@ -60,15 +61,15 @@ public class Grafo {
         int u, v;
 
         /**
-         * Cria um grafo residual
+         * Cria a rede residual
          */
-        int[][] grafoResidual = new int[grafo.length][grafo.length];
+        int[][] redeResidual = new int[grafo.length][grafo.length];
         /**
          * Preenche o grafo residual com as capacidades do grafo original
          */
         for (int i = 0; i < grafo.length; i++) {
             for (int j = 0; j < grafo.length; j++) {
-                grafoResidual[i][j] = grafo[i][j];
+                redeResidual[i][j] = grafo[i][j];
             }
         }
 
@@ -79,7 +80,7 @@ public class Grafo {
         /**
          * Caso haja caminho de "s" para "t", aumenta-se o fluxo
          */
-        while (buscaEmLargura(grafoResidual, s, t, anterior)) {
+        while (buscaEmLargura(redeResidual, s, t, anterior)) {
 
             /**
              * Encontra o fluxo máximo através do caminho encontrado
@@ -87,7 +88,7 @@ public class Grafo {
             int fluxo = Integer.MAX_VALUE;
             for (v = t; v != s; v = anterior[v]) {
                 u = anterior[v];
-                fluxo = Math.min(fluxo, grafoResidual[u][v]);
+                fluxo = Math.min(fluxo, redeResidual[u][v]);
             }
 
             /**
@@ -95,8 +96,8 @@ public class Grafo {
              */
             for (v = t; v != s; v = anterior[v]) {
                 u = anterior[v];
-                grafoResidual[u][v] = grafoResidual[u][v] - fluxo;
-                grafoResidual[v][u] = grafoResidual[v][u] + fluxo;
+                redeResidual[u][v] = redeResidual[u][v] - fluxo;
+                redeResidual[v][u] = redeResidual[v][u] + fluxo;
             }
             /**
              * Adiciona o fluxo ao fluxo máximo
@@ -108,20 +109,51 @@ public class Grafo {
         /**
          * Acha os alcançáveis de "s"
          */
-        acharVizinhos(grafoResidual, s, foiVisitado);
-
+        acharVizinhos(redeResidual, s, foiVisitado);
+        /**
+         * Cria os conjuntos "s" e "t"
+         */
+        ArrayList<Integer> conjunto_s = new ArrayList();
+        ArrayList<Integer> conjunto_t = new ArrayList();
         /**
          * Imprime na tela o fluxo máximo e o corte mínimo
          */
-        System.out.println("O fluxo máximo é: " + fluxoMaximo);
-        System.out.println("O corte mínimo é: ");
+        System.out.println("\nO fluxo máximo é: " + fluxoMaximo);
+        System.out.println("\nO corte mínimo é: ");
         for (int i = 0; i < grafo.length; i++) {
             for (int j = 0; j < grafo.length; j++) {
-                if (grafo[i][j] > 0 && foiVisitado[i] && !foiVisitado[j]) {
+                if (grafo[i][j] > 0 && ((foiVisitado[i] && !foiVisitado[j]) || (foiVisitado[j] && !foiVisitado[i]))) {
                     System.out.println((i + 1) + " - " + (j + 1));
+                }
+                if ((foiVisitado[i] && !foiVisitado[j])) {
+                    if (!conjunto_s.contains(i+1)) {
+                        conjunto_s.add(i+1);
+                    }
+                    if (!conjunto_t.contains(j+1)) {
+                        conjunto_t.add(j+1);
+                    }
                 }
             }
         }
-        return grafoResidual;
+        /**
+         * Imprime os conjuntos "s" e "t"
+         */
+        System.out.print("\n{s = (");
+        for (int i = 0; i < conjunto_s.size(); i++) {
+            System.out.print(conjunto_s.get(i));
+            if (i != conjunto_s.size() - 1) {
+                System.out.print(", ");
+            }
+        }
+        System.out.print("), t = (");
+        for (int i = 0; i < conjunto_t.size(); i++) {
+            System.out.print(conjunto_t.get(i));
+            if (i != conjunto_t.size() - 1) {
+                System.out.print(", ");
+            }
+        }
+        System.out.println(")}");
+        
+        return redeResidual;
     }
 }
