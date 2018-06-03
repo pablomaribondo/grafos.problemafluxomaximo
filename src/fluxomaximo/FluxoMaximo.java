@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class FluxoMaximo {
@@ -16,14 +15,12 @@ public class FluxoMaximo {
         System.out.println("Informe o caminho do arquivo: ");
         Scanner lerArquivo = new Scanner(System.in);
         String arquivo = lerArquivo.nextLine();
-
         /**
          * Java IO
          */
         InputStream inputStream = new FileInputStream(arquivo);
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
         /**
          * Lê a primeira linha do arquivo(vértice origem)
          */
@@ -52,32 +49,10 @@ public class FluxoMaximo {
         bufferedReader.close();
         
         Grafo g = new Grafo();
+        g.exportarGrafo(matrizAdjacencia, numeroVertices, "grafoInicial");
         int[][] grafo = g.corteMinimo(matrizAdjacencia, verticeOrigem - 1, verticeDestino - 1);
-        /**
-         * Exporta a última rede residual para o arquivo grafo.graphml
-         */
-        PrintWriter writer = new PrintWriter("grafo.graphml", "UTF-8");
-        writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        writer.println("<graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns  http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">");
-        writer.println("\t" + "<key id=\"d0\" for=\"edge\" attr.name=\"capacity\" attr.type=\"int\" />");
-        writer.println("\t" + "<graph id=\"G\" edgedefault=\"directed\">");
-        for (int i = 0; i < numeroVertices; i++) {
-            writer.println("\t\t" + "<node id=\"n" + (i + 1) + "\" />");
-        }
-        int contador = 0;
-        for (int i = 0; i < numeroVertices; i++) {
-            for (int j = 0; j < numeroVertices; j++) {
-                if (grafo[i][j] != 0) {
-                    writer.println("\t\t" + "<edge id=\"e" + (++contador) + "\" source=\"n" + (i + 1) + "\" target=\"n" + (j + 1) + "\">");
-                    writer.println("\t\t\t" + "<data key=\"d0\">" + grafo[i][j] + "</data>");
-                    writer.println("\t\t" + "</edge>");
-                }
-            }
-        }
-        writer.println("\t" + "</graph>");
-        writer.println("</graphml>");
-        writer.close();
+        g.exportarGrafo(grafo, numeroVertices, "redeResidual");
         
-        System.out.println("O arquivo grafo.graphml foi criado na pasta do projeto Netbeans!");
+        
     }
 }

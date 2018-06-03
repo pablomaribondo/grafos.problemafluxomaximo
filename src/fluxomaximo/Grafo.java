@@ -1,5 +1,8 @@
 package fluxomaximo;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -111,49 +114,79 @@ public class Grafo {
          */
         acharVizinhos(redeResidual, s, foiVisitado);
         /**
-         * Cria os conjuntos "s" e "t"
+         * Cria os conjuntos "S" e "T"
          */
-        ArrayList<Integer> conjunto_s = new ArrayList();
-        ArrayList<Integer> conjunto_t = new ArrayList();
+        ArrayList<Integer> conjunto_S = new ArrayList();
+        ArrayList<Integer> conjunto_T = new ArrayList();
         /**
          * Imprime na tela o fluxo máximo e o corte mínimo
          */
-        System.out.println("\nO fluxo máximo é: " + fluxoMaximo);
-        System.out.println("\nO corte mínimo é: ");
+        System.out.println("\nO fluxo máximo é: " + fluxoMaximo + "\n\nO corte mínimo é: ");
         for (int i = 0; i < grafo.length; i++) {
             for (int j = 0; j < grafo.length; j++) {
                 if (grafo[i][j] > 0 && ((foiVisitado[i] && !foiVisitado[j]) || (foiVisitado[j] && !foiVisitado[i]))) {
-                    System.out.println((i + 1) + " - " + (j + 1));
+                    System.out.println((i + 1) + " -> " + (j + 1));
                 }
                 if ((foiVisitado[i] && !foiVisitado[j])) {
-                    if (!conjunto_s.contains(i+1)) {
-                        conjunto_s.add(i+1);
+                    if (!conjunto_S.contains(i+1)) {
+                        conjunto_S.add(i+1);
                     }
-                    if (!conjunto_t.contains(j+1)) {
-                        conjunto_t.add(j+1);
+                    if (!conjunto_T.contains(j+1)) {
+                        conjunto_T.add(j+1);
                     }
                 }
             }
         }
         /**
-         * Imprime os conjuntos "s" e "t"
+         * Imprime os conjuntos "S" e "T"
          */
-        System.out.print("\n{s = (");
-        for (int i = 0; i < conjunto_s.size(); i++) {
-            System.out.print(conjunto_s.get(i));
-            if (i != conjunto_s.size() - 1) {
+        System.out.print("\nS = {");
+        for (int i = 0; i < conjunto_S.size(); i++) {
+            System.out.print(conjunto_S.get(i));
+            if (i != conjunto_S.size() - 1) {
                 System.out.print(", ");
             }
         }
-        System.out.print("), t = (");
-        for (int i = 0; i < conjunto_t.size(); i++) {
-            System.out.print(conjunto_t.get(i));
-            if (i != conjunto_t.size() - 1) {
+        System.out.print("}, T = {");
+        for (int i = 0; i < conjunto_T.size(); i++) {
+            System.out.print(conjunto_T.get(i));
+            if (i != conjunto_T.size() - 1) {
                 System.out.print(", ");
             }
         }
-        System.out.println(")}");
-        
+        System.out.println("}");
+                
         return redeResidual;
     }
+    /**
+     * Exporta o grafo para um arquivo do tipo ".graphml"
+     * @param grafo Grafo a ser exportado
+     * @param numeroVertices Número de vértices do grafo
+     * @param nomeArquivo Nome do arquivo que será salvo com a estrutura do grafo
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException 
+     */
+    public void exportarGrafo (int [][] grafo, int numeroVertices, String nomeArquivo) throws FileNotFoundException, UnsupportedEncodingException {
+        PrintWriter writer = new PrintWriter(nomeArquivo + ".graphml", "UTF-8");
+        writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        writer.println("<graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns  http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">");
+        writer.println("\t" + "<key id=\"d0\" for=\"edge\" attr.name=\"capacity\" attr.type=\"int\" />");
+        writer.println("\t" + "<graph id=\"G\" edgedefault=\"directed\">");
+        for (int i = 0; i < numeroVertices; i++) {
+            writer.println("\t\t" + "<node id=\"n" + (i + 1) + "\" />");
+        }
+        int contador = 0;
+        for (int i = 0; i < numeroVertices; i++) {
+            for (int j = 0; j < numeroVertices; j++) {
+                if (grafo[i][j] != 0) {
+                    writer.println("\t\t" + "<edge id=\"e" + (++contador) + "\" source=\"n" + (i + 1) + "\" target=\"n" + (j + 1) + "\">");
+                    writer.println("\t\t\t" + "<data key=\"d0\">" + grafo[i][j] + "</data>");
+                    writer.println("\t\t" + "</edge>");
+                }
+            }
+        }
+        writer.println("\t" + "</graph>");
+        writer.println("</graphml>");
+        writer.close();
+    } 
 }
