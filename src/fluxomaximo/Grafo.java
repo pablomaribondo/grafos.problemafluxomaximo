@@ -118,14 +118,17 @@ public class Grafo {
          */
         ArrayList<Integer> conjunto_S = new ArrayList();
         ArrayList<Integer> conjunto_T = new ArrayList();
+        ArrayList<Integer> entrada = new ArrayList();
+        ArrayList<Integer> saida = new ArrayList();
         /**
-         * Imprime na tela o fluxo máximo e o corte mínimo
+         * Imprime na tela o fluxo máximo, os conjuntos "S" e "T", e o corte mínimo
          */
-        System.out.println("\nO fluxo máximo é: " + fluxoMaximo + "\n\nO corte mínimo é: ");
+        System.out.println("\nO fluxo máximo é: " + fluxoMaximo);
         for (int i = 0; i < grafo.length; i++) {
             for (int j = 0; j < grafo.length; j++) {
                 if (grafo[i][j] > 0 && ((foiVisitado[i] && !foiVisitado[j]) || (foiVisitado[j] && !foiVisitado[i]))) {
-                    System.out.println((i + 1) + " -> " + (j + 1));
+                    saida.add(i + 1);
+                    entrada.add(j + 1);
                 }
                 if ((foiVisitado[i] && !foiVisitado[j])) {
                     if (!conjunto_S.contains(i+1)) {
@@ -137,9 +140,6 @@ public class Grafo {
                 }
             }
         }
-        /**
-         * Imprime os conjuntos "S" e "T"
-         */
         System.out.print("\nS = {");
         for (int i = 0; i < conjunto_S.size(); i++) {
             System.out.print(conjunto_S.get(i));
@@ -155,7 +155,16 @@ public class Grafo {
             }
         }
         System.out.println("}");
-                
+        System.out.println("\nO corte mínimo é: ");
+        System.out.print("(S,T) = {");
+        for (int i = 0; i < saida.size(); i++) {
+            System.out.print("(" + saida.get(i) + ", " + entrada.get(i) + ")");
+            if (i != saida.size() - 1) {
+                System.out.print(", ");
+            }
+        }
+        System.out.println("}");
+        
         return redeResidual;
     }
     /**
